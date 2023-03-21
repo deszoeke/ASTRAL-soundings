@@ -14,6 +14,12 @@
 # ---
 
 # %% [markdown]
+# # Python methods and downloads of soundings from UWyo and IGRA2 to NetCDF
+#
+# NCEI landing page: 
+# https://www.ncei.noaa.gov/access/metadata/landing-page/bin/iso?id=gov.noaa.ncdc:C00975
+
+# %% [markdown]
 # To make a kernel with a siphon virtualenv from the terminal:
 #
 # ```
