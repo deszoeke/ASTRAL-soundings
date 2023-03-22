@@ -33,7 +33,9 @@
 
 # %%
 from siphon.simplewebservice.wyoming import WyomingUpperAir
+from siphon.simplewebservice.igra2 import IGRAUpperAir
 from datetime import datetime
+from netCDF4 import Dataset
 import os
 import pandas
 
@@ -45,9 +47,8 @@ station = "43371" # Trivandrum, Thiruvananthapuram, 'VOTX'?
 df = WyomingUpperAir.request_data(start_time, station) # returns Pandas dataframe
 
 # %%
-df
+# test stuff
 
-# %%
 # for column in df:
 #     print( df[column].name )
 #     print( df[column].values )
@@ -68,8 +69,6 @@ type(df[df.columns[10]][0]) is pandas._libs.tslibs.timestamps.Timestamp
     
 
 # %%
-from netCDF4 import Dataset
-
 "convert Timestamps into string, otherwise just return input."
 def Timestamp2String( t ):
     return ( t.strftime('%Y-%m-%d %H:%M:%S') if type(t) is pandas._libs.tslibs.timestamps.Timestamp else t )
@@ -149,7 +148,7 @@ station = "43371" # Trivandrum, Thiruvananthapuram, 'VOTX'?
 for dt in pandas.date_range(start_time, end_time, freq='12H'):
     try:
         df = WyomingUpperAir.request_data(dt, station) # returns Pandas dataframe
-        sounding2nc( df, "../data/uwyo/trivandrum/Trivandrum"+df.time[0].strftime('%Y%m%d_%H%M')+".nc" )
+        sounding2nc( df, "../data/uwyo/trivandrum/trivandrum"+df.time[0].strftime('%Y%m%d_%H%M')+".nc" )
     except:
         continue
     else:
@@ -165,34 +164,26 @@ station = "43063"  # Pune
 for dt in pandas.date_range(start_time, end_time, freq='12H'):
     try:
         df = WyomingUpperAir.request_data(dt, station) # returns Pandas dataframe
-        sounding2nc( df, "../data/uwyo/pune/Pune"+df.time[0].strftime('%Y%m%d_%H%M')+".nc" )
+        sounding2nc( df, "../data/uwyo/pune/pune"+df.time[0].strftime('%Y%m%d_%H%M')+".nc" )
     except:
         continue
     finally:
         continue
 
 # %%
-# IGRA2
-from siphon.simplewebservice.igra2 import IGRAUpperAir
-
-station = "INM00043192" # Goa
-df, header = IGRAUpperAir.request_data(start_time, station)
-# # ! probably in a different format!
-
-# %%
 type(df.columns) # pandas.core.indexes.base.Index
 # var_indx = pandas.core.indexes.base.Index(['pressure', 'height', 'temperature', 'dewpoint'])
-header
-df
+# header
+# df
 units_list = [ 'none', 'none', 'seconds?', 'hPa', 'none', 'meters', 'none', 'degrees C', 'none', 'percent', 'degrees', 'm/s', 'datestring', 'm/s', 'm/s', 'degree C']
     
 # df.drop(columns='date')
 # for i, column in enumerate(df.columns):
 #     print( i, column, units_list[i] )
 
-dfd = df.drop(columns='date')
-for i, column in enumerate(dfd.columns):
-    print( i, column, units_list[i] )
+# dfd = df.drop(columns='date')
+# for i, column in enumerate(dfd.columns):
+#     print( i, column, units_list[i] )
 
 # %%
 "write an IGRA2 sounding dataframe as a NetCDF4 file."
@@ -229,16 +220,13 @@ def igra2nc( df, header, filename ):
 
 
 # %%
-pandas.date_range(start_time, end_time, freq='D')
-
-# %%
 start_time = datetime(2019, 3, 1, 0)
 end_time = datetime(2019, 6, 30, 0)
 station = "INM00043192" # Goa
 
 
 for dt in pandas.date_range(start_time, end_time, freq='D'): # freq='12H'
-    my_path = "../data/igra2/goa/Goa"+dt.strftime('%Y%m%d_%H%M')+".nc"
+    my_path = "../data/igra2/goa/goa"+dt.strftime('%Y%m%d_%H%M')+".nc"
     if not os.path.exists(my_path) or os.path.getsize(my_path) <= 0:
         try:
             df, header = IGRAUpperAir.request_data(dt.to_pydatetime(), station)
@@ -283,12 +271,58 @@ dr = pandas.date_range(start_time, end_time, freq='D')
 get_igra2_station( dr, station, stationname )
 
 # %%
-stationname = 'thrivandrum'
+stationname = 'trivandrum'
 station = 'INM00043371'
 start_time = datetime(2019, 3, 1, 0)
 end_time = datetime(2019, 6, 30, 0)
 dr = pandas.date_range(start_time, end_time, freq='D')
 
 get_igra2_station( dr, station, stationname )
+
+# %%
+stationname = 'pune'
+station = 'INM00043063'
+start_time = datetime(2018, 3, 1, 0)
+end_time = datetime(2018, 6, 30, 0)
+dr = pandas.date_range(start_time, end_time, freq='D')
+
+get_igra2_station( dr, station, stationname )
+
+# %%
+stationname = 'trivandrum'
+station = 'INM00043371'
+start_time = datetime(2018, 3, 1, 0)
+end_time = datetime(2018, 6, 30, 0)
+dr = pandas.date_range(start_time, end_time, freq='D')
+
+get_igra2_station( dr, station, stationname )
+
+# %%
+start_time = datetime(year, 3, 1, 0)
+end_time = datetime(year, 6, 30, 0)
+
+for year in [2020, 2021, 2022]:
+    get_igra2_station( pandas.date_range(start_time, end_time, freq='D'), 'INM00043371', 'trivandrum'  )
+    get_igra2_station( pandas.date_range(start_time, end_time, freq='D'), 'INM00043063', 'pune'  )
+
+# %%
+# batch rename Trivandrum files
+for filename in os.listdir("../data/igra2/thrivandrum/"):
+    if filename.startswith("thrivandrum"):
+        os.rename("../data/igra2/thrivandrum/"+filename, "../data/igra2/thrivandrum/"+"t"+filename[2:])
+
+# %%
+# batch rename Goa -> goa files
+for filename in os.listdir("../data/igra2/goa/"):
+    if filename.startswith("Goa"):
+        os.rename("../data/igra2/goa/"+filename, "../data/igra2/goa/"+"goa"+filename[4:])
+
+# %%
+station = "INM00043192" # Goa
+
+for year in [2018, 2019, 2020, 2021, 2022]:
+    start_time = datetime(year, 3, 1, 0)
+    end_time = datetime(year, 6, 30, 0)
+    get_igra2_station( pandas.date_range(start_time, end_time, freq='D'), station, 'goa' )
 
 # %%
