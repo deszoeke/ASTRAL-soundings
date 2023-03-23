@@ -1,1 +1,3 @@
-./src/.ipynb-checkpoints/
+# directories
+src/.ipynb-checkpoints/
+data/

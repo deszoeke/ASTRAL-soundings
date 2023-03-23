@@ -234,16 +234,24 @@ for filename in os.listdir("../data/igra2/goa/"):
 # load all the data for all stations
 
 # list of all stations (lists and tuples) -- try to be pythonic!
-X = [ ("INM00043192", "goa"), ("INM00043371", "trivandrum"), ("INM00043063", "pune") ]
+X = [ ("INM00043192", "goa"), ("INM00043371", "trivandrum"), ("INM00043063", "pune"), ("CEM00043466", "colombo") ]
 stationid = [ x[0] for x in X ]
 stationname = [ x[1] for x in X ]
 station_dict = dict( zip(stationname, stationid) )
 # station_dict.keys()
+station_dict.keys()
 
+# %%
 # load all the data for all stations
 for year in [2018, 2019, 2020, 2021, 2022]:
     dr = pandas.date_range(datetime(year, 3, 1, 0), datetime(year, 6, 30, 0), freq='D')
     for stationname in station_dict.keys():
         get_igra2_station( dr, station_dict[stationname], stationname )
+
+# %%
+# get Colombo soundings
+for year in [2018, 2019, 2020, 2021, 2022]:
+    dr = pandas.date_range(datetime(year, 3, 1, 0), datetime(year, 6, 30, 0), freq='D')
+    get_igra2_station( dr, station_dict["colombo"], "colombo" )
 
 # %%
