@@ -6,7 +6,7 @@
 #       extension: .jl
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.14.5
+#       jupytext_version: 1.14.0
 #   kernelspec:
 #     display_name: Julia 1.8.5
 #     language: julia
@@ -185,19 +185,19 @@ nanmean(x; dims) = sum(x -> isnan(x) ? 0 : x, x, dims=dims) ./ sum(isfinite, x, 
 anom(x; dims) = x .- nanmean(x, dims=dims)
 
 # %%
+year = 2022
+
 # make sounding data dictionary
 varnames = [ "temperature", "dewpoint", "u_wind", "v_wind" ]
 dicarr( var ) = ( var, arr() )
 soundings = Dict{String, Array}( [dicarr.(varnames)...] )
 
 # fill in with interpolated data from files
-year = 2022
 for var in varnames
     interp_snd_var!( soundings[var], var; stationname="trivandrum", daterange=DateTime(year,3,1):Day(1):DateTime(year,6,30) )
     # interp_snd_var!( soundings[var], var )
 end
 
-# %%
 # physical variables
 Pi = (plevs/1e3).^(-0.287)
 th = Pi'.*(273.15.+soundings["temperature"])
@@ -207,8 +207,6 @@ qs = qsat.(soundings["temperature"], plevs')
 q = qsat.(soundings["dewpoint"], plevs')
 rh = q./qs
 
-
-# %%
 # plot winds
 mdates = matplotlib.dates
 
@@ -231,56 +229,82 @@ ax2.xaxis.set_minor_formatter(mdates.DateFormatter("%d"))
 colorbar()
 
 # %%
-ax1=subplot(2,1,1)
-pc1 = pcolormesh(dr, plevs, anom(th, dims=1)', vmin=-5, vmax=5, cmap=ColorMap("RdYlBu_r"))
-contour(dr, plevs, th', colors="k", linewidths=0.25, levels=20)
-ylim([1010, 100])
-ax1.xaxis.set_major_locator(mdates.MonthLocator())
-ax1.xaxis.set_minor_locator(mdates.DayLocator((10, 20)))
-ax1.xaxis.set_major_formatter(mdates.DateFormatter("%b"))
-ax1.xaxis.set_minor_formatter(mdates.DateFormatter("%d"))
-colorbar(pc1)
-ax2=subplot(2,1,2)
-# pcolormesh(dr, plevs, 1e3*q', vmin=0, vmax=18, cmap=ColorMap("RdYlBu_r"))
-pc2 = pcolormesh(dr, plevs, rh', vmin=0, vmax=1.0, cmap=ColorMap("RdYlBu_r"))
-contour(dr, plevs, th', colors="k", linewidths=0.25, levels=20)
-ylim([1010, 100])
-ax2.xaxis.set_major_locator(mdates.MonthLocator())
-ax2.xaxis.set_minor_locator(mdates.DayLocator((10, 20)))
-ax2.xaxis.set_major_formatter(mdates.DateFormatter("%b"))
-ax2.xaxis.set_minor_formatter(mdates.DateFormatter("%d"))
-colorbar(pc2)
+"plot zonal wind and RH for a given year"
+function plot_wind_rh_snd( year )
+
+    # get sounding data dictionary
+    varnames = [ "temperature", "dewpoint", "u_wind", "v_wind" ]
+    dicarr( var ) = ( var, arr() )
+    soundings = Dict{String, Array}( [dicarr.(varnames)...] )
+
+    # read interpolated data from files
+    for var in varnames
+        interp_snd_var!( soundings[var], var; stationname="trivandrum", daterange=DateTime(year,3,1):Day(1):DateTime(year,6,30) )
+        # interp_snd_var!( soundings[var], var )
+    end
+    
+    # compute physical variables
+    Pi = (plevs/1e3).^(-0.287)
+    th = Pi'.*(273.15.+soundings["temperature"])
+    thm = nanmean(th, dims=1)
+
+    qs = qsat.(soundings["temperature"], plevs')
+    q = qsat.(soundings["dewpoint"], plevs')
+    rh = q./qs
+
+    # plot zonal wind
+    ax1=subplot(2,1,1)
+    pc1 = pcolormesh(dr, plevs, soundings["u_wind"]', vmin=-15, vmax=15, cmap=ColorMap("RdYlBu_r"))
+    ylim([1010, 100])
+    ax1.xaxis.set_major_locator(mdates.MonthLocator())
+    ax1.xaxis.set_minor_locator(mdates.DayLocator((10, 20)))
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter("%b"))
+    ax1.xaxis.set_minor_formatter(mdates.DateFormatter("%d"))
+    colorbar(pc1)
+    ax1.set_ylabel("pressure")
+    ax1.set_title("zonal wind (m/s)")
+
+    # plot RH
+    ax2=subplot(2,1,2)
+    # pcolormesh(dr, plevs, 1e3*q', vmin=0, vmax=18, cmap=ColorMap("RdYlBu_r"))
+    pc2 = pcolormesh(dr, plevs, rh', vmin=0, vmax=1.0, cmap=ColorMap("RdYlBu_r"))
+    contour(dr, plevs, th', colors="k", linewidths=0.25, levels=20)
+    ylim([1010, 100])
+    ax2.xaxis.set_major_locator(mdates.MonthLocator())
+    ax2.xaxis.set_minor_locator(mdates.DayLocator((10, 20)))
+    ax2.xaxis.set_major_formatter(mdates.DateFormatter("%b"))
+    ax2.xaxis.set_minor_formatter(mdates.DateFormatter("%d"))
+    colorbar(pc2)
+    ax2.set_ylabel("pressure")
+    ax2.set_title("relative humidity")
+    
+    tight_layout()
+    
+    return ax1, ax2
+end
 
 # %%
-ax1=subplot(2,1,1)
-pcolormesh(dr, plevs, soundings["u_wind"]', vmin=-15, vmax=15, cmap=ColorMap("RdYlBu_r"))
-ylim([1010, 100])
-ax1.xaxis.set_major_locator(mdates.MonthLocator())
-ax1.xaxis.set_minor_locator(mdates.DayLocator((10, 20)))
-ax1.xaxis.set_major_formatter(mdates.DateFormatter("%b"))
-ax1.xaxis.set_minor_formatter(mdates.DateFormatter("%d"))
-colorbar()
+year = 2022
+ax1, ax2 = plot_wind_rh_snd( year )
+savefig("u_rh_$(year).png")
 
-ax2=subplot(2,1,2)
-# pcolormesh(dr, plevs, 1e3*q', vmin=0, vmax=18, cmap=ColorMap("RdYlBu_r"))
-pc2 = pcolormesh(dr, plevs, rh', vmin=0, vmax=1.0, cmap=ColorMap("RdYlBu_r"))
-contour(dr, plevs, th', colors="k", linewidths=0.25, levels=20)
-ylim([1010, 100])
-ax2.xaxis.set_major_locator(mdates.MonthLocator())
-ax2.xaxis.set_minor_locator(mdates.DayLocator((10, 20)))
-ax2.xaxis.set_major_formatter(mdates.DateFormatter("%b"))
-ax2.xaxis.set_minor_formatter(mdates.DateFormatter("%d"))
-colorbar(pc2)
+# %%
+year = 2019
+ax1, ax2 = plot_wind_rh_snd( year )
+savefig("u_rh_$(year).png")
 
 # %% [markdown]
-# Trivandrum 2018-2019 humidity precedes wind in onset vortex. 
+# Trivandrum 2018-2019 humidity precedes wind. Is this an indication of the monsoon onset vortex?
 #
-# | year | onset duration |
+# | year | humidity leads zonal wind |
 # | ---- | ------- |
 # | 2018 | 20 days |
 # | 2019 | 10 days |
 # | 2020 | sounding outages; almost double onset |
 # | 2021 | major sounding outages |
-# | 2022 | intraseasonal monsoon: onsets May 10 & June 20; RH synchronous with u. | 
+# | 2022 | intraseasonal: RH synchronous with u, active May 10 & June 20. | 
+#
+#
+# Thiruvananthapuram soundings from 2019 and 2022 provide examples of 2 different types of monsoon onsets. In 2019, there is an onset vortex with deep increased RH 10 days before the onset of westerly winds. In 2022, monsoon intraseasonal oscillations (MISO) have several deep moist RH anomalies around April 10, May 15, and June 15, with near-synchronous pulses of zonal wind April 15 (weak), May 10-20, and June 20-30 modulating the increase of wind over the season.
 
 # %%
