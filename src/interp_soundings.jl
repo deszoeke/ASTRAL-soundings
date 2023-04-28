@@ -307,4 +307,5 @@ savefig("u_rh_$(year).png")
 #
 # Thiruvananthapuram soundings from 2019 and 2022 provide examples of 2 different types of monsoon onsets. In 2019, there is an onset vortex with deep increased RH 10 days before the onset of westerly winds. In 2022, monsoon intraseasonal oscillations (MISO) have several deep moist RH anomalies around April 10, May 15, and June 15, with near-synchronous pulses of zonal wind April 15 (weak), May 10-20, and June 20-30 modulating the increase of wind over the season.
 
-# %%
+# %% [markdown]
+# ## 
