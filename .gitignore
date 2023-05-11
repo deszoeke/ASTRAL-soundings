@@ -1,3 +1,7 @@
 # directories
 src/.ipynb-checkpoints/
 data/
+
+# files
+.DS_Store
+src/.ipynb_checkpoints/
