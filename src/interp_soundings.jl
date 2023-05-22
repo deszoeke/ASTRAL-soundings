@@ -6,9 +6,9 @@
 #       extension: .jl
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.14.0
+#       jupytext_version: 1.14.5
 #   kernelspec:
-#     display_name: Julia 1.8.5
+#     display_name: julia 1.8.5
 #     language: julia
 #     name: julia-1.8
 # ---
