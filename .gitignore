@@ -1,6 +1,9 @@
 # directories
-src/.ipynb-checkpoints/
 data/
+
+src/.ipynb-checkpoints/
+src/20190719230018023412_Bufr_309052_all.nc
+src/snd.nc
 
 # files
 .DS_Store
