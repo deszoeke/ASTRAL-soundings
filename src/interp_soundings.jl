@@ -8,7 +8,7 @@
 #       format_version: '1.3'
 #       jupytext_version: 1.14.5
 #   kernelspec:
-#     display_name: Julia 1.8.5
+#     display_name: julia 1.8.5
 #     language: julia
 #     name: julia-1.8
 # ---
@@ -21,6 +21,9 @@
 # author: Simon de Szoeke
 
 # %%
+# /Users/sdeszoek/Projects/ASTRAL/soundings/src
+using Pkg; Pkg.activate("..")
+
 using Dates
 using NCDatasets
 using Interpolations
