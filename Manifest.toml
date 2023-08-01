@@ -2,7 +2,7 @@
 
 julia_version = "1.8.5"
 manifest_format = "2.0"
-project_hash = "a6a4506cd1614d48c410044a205014dfdd629035"
+project_hash = "7bdd022cb7e78dfcbb08f6ac208a94ebe7bcbf0f"
 
 [[deps.Adapt]]
 deps = ["LinearAlgebra", "Requires"]
@@ -439,6 +439,11 @@ version = "0.4.5"
 git-tree-sha1 = "45e428421666073eab6f2da5c9d310d99bb12f9b"
 uuid = "189a3867-3050-52da-a836-e630ba90ab69"
 version = "1.2.2"
+
+[[deps.RegularExpressions]]
+git-tree-sha1 = "a844fabeb735fcc08b36e1ef7f6e216fd54e786d"
+uuid = "27faeba3-bc54-5829-b163-df8cb949fe88"
+version = "0.1.0"
 
 [[deps.Requires]]
 deps = ["UUIDs"]
