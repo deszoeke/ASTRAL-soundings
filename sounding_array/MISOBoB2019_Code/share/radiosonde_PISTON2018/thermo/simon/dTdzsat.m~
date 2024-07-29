@@ -1,0 +1,25 @@
+function dTdz = dTdzsat(p (Pa), Temp (K), [inflag, [outflag]])
+% (K/m) = dTdzsat(p (Pa), Temp (K), [inflag, [outflag]])
+%  Given a temperature (or potential temperature) and pressure, determine
+%  dT/dz for a moist adiabat.
+%   If inflag is nonzero, Temp input is treated as theta.
+%   If outflag is nonzero, dtheta/dz is returned.
+  
+  if ~exist('inflag' ,'var'); inflag  = 0; end;
+  if ~exist('outflag','var'); outflag = 0; end;
+  
+  Pi = (p./1e5).^(Rd/Cp);
+  if(inflag) % input is theta
+    th = Temp;
+    Temp = th.*Pi;
+  else       % input is T
+    th = Temp./Pi;
+  end
+  
+  dTdz  = -g/Cp./(1 + L/Cp.*dqsdT(p,Temp));
+  dthdz = (-g/Cp - dTdz)./Pi;
+  
+  if(outflag)
+    dTdz = dthdz;
+  end
+  
