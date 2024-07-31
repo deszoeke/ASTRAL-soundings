@@ -9,3 +9,5 @@ src/snd.nc
 .DS_Store
 .ipynb_checkpoints/
 Manifest.toml
+src/radiosonde_EKAMSAT_Gantt.pdf
+src/radiosonde_EKAMSAT_Gantt.png
