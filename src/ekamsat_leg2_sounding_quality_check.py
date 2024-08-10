@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri May 10 10:13:20 2024
-The scripts currently checks for sounding dataset (.nc files) for the following errors:
+The script currently checks the sounding dataset (.nc files) for the following errors:
 1. non-numeric entry, 
 2. quantities exceeding physical limits,
 3. height not increasing monotonically.
