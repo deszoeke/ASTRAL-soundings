@@ -7,9 +7,12 @@ The script currently checks the sounding dataset (.nc files) for the following e
 3. height not increasing monotonically.
 4. Ascent rate exceeding 20 m/s 
 
+The erroneous entries are replaced by NaNs and the new soundings are stored in .csv format.
+
 Ref: Loehrer, S. M., Edmands, T. A., & Moore, J. A. (1996). TOGA COARE upper-air sounding data archive: Development and quality control procedures. Bulletin of the American Meteorological Society, 77(11), 2651-2672.
 
 It also plots the soundings on thephigrams and calculates instability parameters: CAPE, CIN,TPW, LCL,LFC, Mixed layer height.
+
 @author: jayes
 """
 
