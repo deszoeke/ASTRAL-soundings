@@ -12,9 +12,9 @@ def L0_to_L1(L0_path, L1_path):
     file_list = os.listdir(L0_path)
     for file in file_list:
         
-        print('Reading ', L0_path + file + "........")
+        print('Reading ', os.path.join(L0_path, file) + "........")
         
-        ds = xr.open_dataset(L0_path + file)
+        ds = xr.open_dataset(os.path.join(L0_path, file))
         
         ###########################################################
         ############## Replace non numeric entries by NaN #########
@@ -64,7 +64,7 @@ def L0_to_L1(L0_path, L1_path):
     
         L1_filename = file.split(".nc")[0] + "_L1.nc"
 
-        ds.to_netcdf(L1_path + L1_filename) # store as L1 files
+        ds.to_netcdf(os.path.join(L1_path, L1_filename)) # store as L1 files
         ds.close()
         ds_num.close()
-        print('saved to ', L1_path + L1_filename)
+        print('saved to ', os.path.join(L1_path, L1_filename))

@@ -1,11 +1,12 @@
 # directories
 data/
 
+src/__pycache__/
 src/.ipynb-checkpoints/
-src/20190719230018023412_Bufr_309052_all.nc
-src/snd.nc
 
 # files
+src/20190719230018023412_Bufr_309052_all.nc
+src/snd.nc
 .DS_Store
 .ipynb_checkpoints/
 Manifest.toml
