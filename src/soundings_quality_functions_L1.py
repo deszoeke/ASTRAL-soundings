@@ -6,10 +6,12 @@ Created on Tue Feb 18 17:58:00 2025
 
 import xarray as xr;
 import os
+import glob
 import pandas as pd
 
 def L0_to_L1(L0_path, L1_path):
-    file_list = os.listdir(L0_path)
+    # file_list = os.listdir(L0_path)
+    file_list = [os.path.basename(f) for f in glob.glob(os.path.join(L0_path,"EKAMSAT*.nc"))]
     for file in file_list:
         
         print('Reading ', os.path.join(L0_path, file) + "........")
