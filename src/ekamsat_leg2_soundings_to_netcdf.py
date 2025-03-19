@@ -73,7 +73,7 @@ for f_name in fnames:
                 # Table to pandas DataFrame
                 df   = pd.DataFrame(data, columns = ['Time','Height (GP)','Height (MSL)','Lon', 'Lat','Pressure', 
                                                      'Temperature' , 'Dewpoint', 'Mixing ratio', 'RH', 'Density', 
-                                                     'Speed', 'Direction', 'uwind', 'vwind', 'Ascent'])
+                                                     'Speed', 'Direction', 'vwind', 'uwind', 'Ascent'])
                 
                 
                 p = df["Pressure"]
