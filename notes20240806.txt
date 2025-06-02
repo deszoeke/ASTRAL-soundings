@@ -1,0 +1,20 @@
+ASTRAL Radiosond working group meeting - 2024 Aug 6
+
+
+4/day leg 1
+6/day leg 2 to June 6
+3/day June 6-10
+
+IMD soundings ~daily
+Columbo 4/week
+Ask Simon if IMD high resolution soundings are missing.
+
+
+Start a google doc and a spreadsheet for when errors were found.
+Generalizable error types.
+
+Put in consistent format, with consistent readers.
+Consistent visualizations.
+Divy up tasks to spot errors.
+
+Create L1 files around time of Sept EKAMSAT meeting.
