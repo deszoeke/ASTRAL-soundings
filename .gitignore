@@ -1,5 +1,6 @@
 # directories
 data/
+plot/
 
 src/__pycache__/
 src/.ipynb-checkpoints/
@@ -13,3 +14,7 @@ Manifest.toml
 src/radiosonde_EKAMSAT_Gantt.pdf
 src/radiosonde_EKAMSAT_Gantt.png
 data
+
+*.svg
+*.png
+*.pdf
