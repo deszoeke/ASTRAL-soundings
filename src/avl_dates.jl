@@ -3,12 +3,13 @@ using Dates
 using HTTP
 
 # get available Aminidivi (station no 43311) soundings
-#
+
 # urls that return valid soundings for each year
 site = "https://weather.uwyo.edu"
 urls = [
 "/wsgi/sounding?datetime=2025-01-01 00:00:00&id=43311&type=INVENTORY&src=FM35"
 "/wsgi/sounding?datetime=2024-01-01 00:00:00&id=43311&type=INVENTORY&src=FM35"
+"/wsgi/sounding?datetime=2023-01-01 00:00:00&id=43311&type=INVENTORY&src=FM35"
 "/wsgi/sounding?datetime=2022-01-01 00:00:00&id=43311&type=INVENTORY&src=FM35"
 "/wsgi/sounding?datetime=2021-01-01 00:00:00&id=43311&type=INVENTORY&src=FM35"
 "/wsgi/sounding?datetime=2020-01-01 00:00:00&id=43311&type=INVENTORY&src=FM35"
@@ -75,6 +76,22 @@ for u in urls
 	   println(dt)
 	   push!(dts, dt)
       end
+end
+
+open("dates.txt", "w") do io
+      [print(io, dt,"\n") for dt in sort(dts)]
+end
+
+
+# add 2023
+dts = [DateTime(line) for line in readlines("dates.txt")]
+
+u = "/wsgi/sounding?datetime=2023-01-01 00:00:00&id=43311&type=INVENTORY&src=FM35"
+html = String(HTTP.get(site*url_encode(u)).body)
+for m in eachmatch(re, html)
+    dt = DateTime(parse.(Int, m.captures)...)
+    println(dt)
+    push!(dts, dt)
 end
 
 open("dates.txt", "w") do io
