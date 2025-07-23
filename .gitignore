@@ -15,7 +15,9 @@ src/radiosonde_EKAMSAT_Gantt.pdf
 src/radiosonde_EKAMSAT_Gantt.png
 data
 
+*.eps
 *.svg
 *.png
 *.pdf
+data
 data
