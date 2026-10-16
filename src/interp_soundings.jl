@@ -28,7 +28,7 @@ using Dates
 using NCDatasets
 using Interpolations
 using Statistics
-using PyPlot
+using PythonPlot
 
 # %%
 # Interpolation methods
