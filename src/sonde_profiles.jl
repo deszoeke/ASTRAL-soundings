@@ -31,6 +31,9 @@ function dθdz_moist(θ, p)
     (θ/T) * (g/cp - Γm)
 end
 
+"Buck (1981) saturation vapor pressure over water [hPa], T in °C, p in hPa"
+esat_buck(T_C, p) = (1.0007 + 3.46e-6p) * 6.1121exp(17.502T_C/(240.97 + T_C))
+
 uwind(spd, dir) = -spd * sind(dir)
 vwind(spd, dir) = -spd * cosd(dir)
 fl(x) = Float64.(coalesce.(x, NaN))
@@ -84,10 +87,9 @@ const amini_latlon = (11.12, 72.73)
 function read_amini(file)
     t = DateTime(match(r"(\d{8}_\d{4})", file)[1], "yyyymmdd_HHMM")
     NCDataset(file) do ds
-        T = fl(ds["temperature"][:]); Td = fl(ds["dewpoint"][:])
-        es(T) = 6.112exp(17.67T/(T + 243.5))
-        profile("Amini", "Amini", t, amini_latlon..., ds["pressure"][:], ds["height"][:], T,
-                100 .* es.(Td) ./ es.(T), ds["u_wind"][:], ds["v_wind"][:])
+        T = fl(ds["temperature"][:]); Td = fl(ds["dewpoint"][:]); p = fl(ds["pressure"][:])
+        profile("Amini", "Amini", t, amini_latlon..., p, ds["height"][:], T,
+                100 .* esat_buck.(Td, p) ./ esat_buck.(T, p), ds["u_wind"][:], ds["v_wind"][:])
     end
 end
 amini_files() = sort(filter(f -> endswith(f, ".nc"), readdir(joinpath(datadir, "uwyo/aminidivi"); join=true)))
