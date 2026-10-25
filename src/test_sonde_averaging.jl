@@ -51,12 +51,6 @@ hi = syn(zhi)
     @test map((t, p, q) -> SondeAveraging.dewpoint(t, p; q=q), T1, pr.p, field_values(pr, :q)) ≈ Td1 atol=1e-6
 end
 
-@testset "select_may_arabian_sea" begin
-    ps = [syn(zhi; time=DateTime(2024, 5, 1)), syn(zhi; time=DateTime(2024, 6, 1)),
-          syn(zhi; time=DateTime(2024, 5, 20), lon=80.0)]
-    @test length(select_may_arabian_sea(ps)) == 1
-end
-
 @testset "to_pgrid: average high resolution, interpolate low resolution" begin
     pc = 100.0:10.0:1000.0
     # linear in p, 1 hPa samples centered in each bin: bin mean = value at the center
@@ -79,6 +73,23 @@ end
     k = findall(pc .>= 910)
     zc = -7500 .* log.(pc[k] ./ 1013.25)
     @test m.mean[k] ≈ θsyn.(zc) atol=0.02
+end
+
+@testset "hist_field" begin
+    N = 4
+    ps = [syn(zhi) for _ in 1:N]
+    pc = 220.0:10.0:1000.0
+    h = hist_field(ps, :θ; dx=0.5, xlims=(280.0, 400.0), pcenters=pc)
+    @test size(h.H) == (240, length(pc)) && length(h.xedges) == 241
+    @test all(sum(h.H; dims=1) .== N)             # one count per sounding per level
+    @test maximum(h.H) == N                        # identical soundings fall in one bin
+    # defaults: data range, 100 bins
+    h2 = hist_field(ps, :θ; pcenters=pc)
+    @test length(h2.xedges) == 101 && sum(h2.H) == N * length(pc)
+    # unequal bins: explicit edges, one count per sounding per level when the edges cover the data
+    h3 = hist_field(ps, :θ; edges=[250.0, 300.0, 310.0, 500.0], pcenters=pc)
+    @test h3.xedges == [250.0, 300.0, 310.0, 500.0] && size(h3.H) == (3, length(pc))
+    @test all(sum(h3.H; dims=1) .== N)
 end
 
 @testset "hist_T_Td" begin

@@ -1,0 +1,23 @@
+# capping inversion over the eastern Arabian Sea and west coast of India
+
+Literature shows it is
+caused by warm dry air from Arabia and Persia. I did not find any paper that shows one at about 725 hPa in May. Everything below comes from abstracts, since I haven't read the full texts.
+
+## What the papers support
+- **Base near 700 hPa:** Narayanan et al. [1] describe the monsoon inversion over the western Arabian Sea. They say it is low and strong there, with its base at 900–800 hPa. It weakens and rises toward the coast of India, where the base is at about 700 hPa. They attribute it to warm dry continental air from Africa and Arabia lying above the maritime air. That makes 700 hPa near the Indian coast the closest match, but it describes the monsoon season, not May.
+- **Inversions in the 500–800 hPa range:** off the west coast in July 2002, Bhat [2, 3] reports two prominent inversions, one near 800 hPa and one near 500 hPa, and calls the lower one an energy barrier to deep convection [3]. He links them to repeated advection of dry desert air [2].
+- **Source and a layer near 500 hPa:** at Goa, Muraleedharan et al. [4] link the lower inversion and a secondary one at 5–6 km to warm dry air from the Arabian and Persian highlands. Swathi et al. [5] find warm dusty air above the cool moist low-level jet, with a stable layer strong enough to suppress convection.
+- **Pre-monsoon timing:** Dwivedi et al. [6] find that April–May inversions sit at lower altitude than the summer ones and are strengthened by subsidence. Advection of warm, dry, dust-laden desert air dominates [6]. Their inversion height is not given in the abstract.
+- **May context:** Alappattu et al. [7] describe the March–May 2006 marine boundary layer, which has a trade-wind inversion, and in some soundings a double mixed layer over the Arabian Sea. Sen et al. [8] report a low-level inversion over the Arabian Sea before onset, formed where cool moist oceanic air meets dry warm continental air.
+
+**What I did not find:** a May-specific climatology that puts the capping base at 725 hPa. If you have in mind a particular level from your composite, the best next step is to compare it with the inversion bases in [1], [3] and [6]. Those are the papers closest to your region and season. I can look at how the SCI top and MI heights in your selected soundings compare with those papers, if you want.
+
+**References**
+1. [Detection of monsoon inversion by TIROS-N satellite](https://consensus.app/papers/details/cb076014cd8b52b9b8f676a6782d27ca/?utm_source=claude_desktop) (Narayanan et al., 1981, Nature, 39 citations, DOI 10.1038/294546a0)
+2. [The Indian drought of 2002—a sub‐seasonal phenomenon?](https://consensus.app/papers/details/947ebaf71f455068909063aaa7eef2a2/?utm_source=claude_desktop) (Bhat, 2006, Quarterly Journal of the Royal Meteorological Society, 142 citations, DOI 10.1256/qj.05.13)
+3. [Convection inhibition energy of the inversion and the suppressed rainfall over the Arabian Sea during July 2002](https://consensus.app/papers/details/68f1b2ab08ba56b9877aa0b6cb71eb07/?utm_source=claude_desktop) (Bhat, Mausam 56(1), 2005, DOI 10.54302/mausam.v56i1.866)
+4. [A study on the characteristics of temperature inversions in active and break phases of Indian summer monsoon](https://consensus.app/papers/details/d21d5dfad29e5f5bb36be03df01a90d2/?utm_source=claude_desktop) (Muraleedharan et al., 2013, Journal of Atmospheric and Solar-Terrestrial Physics, 20 citations, DOI 10.1016/j.jastp.2012.11.006)
+5. [Upper air thermal inversion and their impact on the summer monsoon rainfall over Goa – A case study](https://consensus.app/papers/details/d557ab4febb05bfbb9d6a14ed2607de3/?utm_source=claude_desktop) (Swathi et al., 2018, Journal of Atmospheric and Solar-Terrestrial Physics, 6 citations, DOI 10.1016/j.jastp.2018.01.002)
+6. [Formation and maintenance of monsoon inversion over the Arabian Sea](https://consensus.app/papers/details/590a7d591e595bc0a7293ea38cb349b1/?utm_source=claude_desktop) (Dwivedi et al., 2023, Theoretical and Applied Climatology, 2 citations, DOI 10.1007/s00704-023-04785-7)
+7. [Observations of the thermodynamic structure of marine atmospheric boundary layer over Bay of Bengal, Northern Indian Ocean and Arabian Sea during premonsoon period](https://consensus.app/papers/details/5cfa9ef812df572c8b5e3c3363736688/?utm_source=claude_desktop) (Alappattu et al., 2010, Journal of Atmospheric and Solar-Terrestrial Physics, 13 citations, DOI 10.1016/j.jastp.2010.07.011)
+8. [Some synoptic aspects of the low level inversion over Arabian Sea during MONEX'79](https://consensus.app/papers/details/133e3d7f5f7255cea1817ca1d1e1aadc/?utm_source=claude_desktop) (Sen et al., 1986, Mausam, DOI 10.54302/mausam.v37i1.2191)

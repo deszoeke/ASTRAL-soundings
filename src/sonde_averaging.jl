@@ -5,7 +5,7 @@
 #      the midtropospheric mixed layer (MML), and the midtropospheric inversion (MI)
 #
 #   include("sonde_averaging.jl"); using .SondeAveraging
-#   as   = select_may_arabian_sea(profs)
+#   as   = filter(...)                   # choose soundings in the notebook
 #   h    = hist_T_Td(as)                 # method 1
 #   m    = mean_on_pgrid(as, :θ)         # method 2
 #   c    = composite_layers(as, (:θ, :u, :v))   # method 3
@@ -19,24 +19,13 @@ module SondeAveraging
 import Statistics, Dates
 include(joinpath(@__DIR__, "inversions.jl")); using .Inversions
 
-export select_may_arabian_sea, T_Td, field_values, colstats,
-       to_pgrid, profiles_on_pgrid, mean_on_pgrid, hist_pgrid, hist_T_Td,
+export T_Td, field_values, colstats,
+       to_pgrid, profiles_on_pgrid, mean_on_pgrid, hist_pgrid, hist_field, hist_T_Td,
        layer_bounds, layer_levels, layer_ζ, composite_layers, LAYERS, DEFAULT_NPER
 
 const κ = 287.04/1005.7          # Rd/cp, as in sonde_profiles.jl
 
 # ---------------- common helpers ----------------
-
-"""
-select_may_arabian_sea(profs; months=(5,), lonrange=(-Inf, 77.57), latrange=(-Inf, Inf))
-soundings from `months` inside the lon/lat box, by default May west of 77.57°E.
-"""
-function select_may_arabian_sea(profs; months=(5,), lonrange=(-Inf, 77.57), latrange=(-Inf, Inf))
-    filter(profs) do p
-        Dates.month(p.time) in months &&
-            lonrange[1] <= p.lon <= lonrange[2] && latrange[1] <= p.lat <= latrange[2]
-    end
-end
 
 const ε = 0.622                  # Rd/Rv
 
@@ -158,23 +147,54 @@ function hist_pgrid(X; dx=0.1, xlims=(-90.0, 40.0))
 end
 
 """
+hist_field(profs, f; dx=nothing, xlims=nothing, edges=nothing, pcenters=10:10:1020, halfwidth=5, maxgap=Inf)
+histogram of field f (:θ, :T, :Td, :q, :rh, :u, :v, :z, or any profile field) at each pressure level,
+one realization per sounding, in dx bins over xlims. By default xlims is the range of the data and dx
+is 1/100 of it. Pass increasing `edges` instead for unequal bins (e.g. geometric edges for q); values
+outside the edges are not counted. Returns (H, xedges, pcenters, pedges, n) with H[xbin, level].
+"""
+function hist_field(profs, f::Symbol; dx=nothing, xlims=nothing, edges=nothing, pcenters=10.0:10.0:1020.0,
+                    halfwidth=5.0, kw...)
+    X = profiles_on_pgrid(profs, f; pcenters=pcenters, halfwidth=halfwidth, kw...)
+    pedges = collect(range(first(pcenters) - halfwidth, last(pcenters) + halfwidth; length=length(pcenters)+1))
+    if edges !== nothing
+        xedges = collect(float.(edges))
+        H = zeros(Int, length(xedges) - 1, size(X, 2))
+        for j in axes(X, 2), i in axes(X, 1)
+            x = X[i, j]
+            isfinite(x) || continue
+            k = searchsortedlast(xedges, x)
+            1 <= k < length(xedges) && (H[k, j] += 1)
+        end
+        return (H=H, xedges=xedges, pcenters=pcenters, pedges=pedges, n=length(profs))
+    end
+    if xlims === nothing
+        v = filter(isfinite, X)
+        lo, hi = isempty(v) ? (0.0, 1.0) : extrema(v)
+        hi > lo || (lo -= 0.5; hi += 0.5)
+        xlims = (lo, hi + 1e-6*(hi - lo))        # include the maximum in the last bin
+    end
+    dx === nothing && (dx = (xlims[2] - xlims[1])/100)
+    H, xedges = hist_pgrid(X; dx=dx, xlims=xlims)
+    (H=H, xedges=xedges, pcenters=pcenters, pedges=pedges, n=length(profs))
+end
+
+"""
 hist_T_Td(profs; dT=0.1, Tlims=(-90, 40), pcenters=10:10:1020, halfwidth=5, maxgap=Inf)
 method 1: histograms of T and Td [°C] (dT bins) and specific humidity q [kg/kg] (dq = 1e-4
 bins) at each pressure level, one realization per sounding, returned as
 (T, Td, q, Tedges, qedges, pcenters, pedges, n). q is conserved, so it averages linearly;
 Td, which has a sensible range as T and saturation q fall with height, is the better axis
-for display.
+for display. See hist_field for any other variable.
 """
 function hist_T_Td(profs; dT=0.1, Tlims=(-90.0, 40.0), dq=1e-4, qlims=(0.0, 0.03),
                    pcenters=10.0:10.0:1020.0, halfwidth=5.0, kw...)
-    HT, Tedges = hist_pgrid(profiles_on_pgrid(profs, :T; pcenters=pcenters, halfwidth=halfwidth, kw...);
-                            dx=dT, xlims=Tlims)
-    HTd, _ = hist_pgrid(profiles_on_pgrid(profs, :Td; pcenters=pcenters, halfwidth=halfwidth, kw...);
-                        dx=dT, xlims=Tlims)
-    Hq, qedges = hist_pgrid(profiles_on_pgrid(profs, :q; pcenters=pcenters, halfwidth=halfwidth, kw...);
-                            dx=dq, xlims=qlims)
-    pedges = collect(range(first(pcenters) - halfwidth, last(pcenters) + halfwidth; length=length(pcenters)+1))
-    (T=HT, Td=HTd, q=Hq, Tedges=Tedges, qedges=qedges, pcenters=pcenters, pedges=pedges, n=length(profs))
+    kws = (; pcenters=pcenters, halfwidth=halfwidth, kw...)
+    hT  = hist_field(profs, :T;  dx=dT, xlims=Tlims, kws...)
+    hTd = hist_field(profs, :Td; dx=dT, xlims=Tlims, kws...)
+    hq  = hist_field(profs, :q;  dx=dq, xlims=qlims, kws...)
+    (T=hT.H, Td=hTd.H, q=hq.H, Tedges=hT.xedges, qedges=hq.xedges,
+     pcenters=pcenters, pedges=hT.pedges, n=length(profs))
 end
 
 # ---------------- method 3: layer composite ----------------
@@ -229,8 +249,8 @@ end
 composite_layers(profs, fields=(:θ,); nper=DEFAULT_NPER, maxgap=1500, kw...)
 method 3: interpolate each sounding with layer_bounds to the normalized layer levels, then
 average over soundings. kw are passed to layer_bounds. Returns
-(ζ, mean, std, n, zmean, edges, ok, nrejected), where mean/std/n are NamedTuples keyed by
-`fields`, zmean is the mean height of each level, edges[sounding, 6] the layer boundaries,
+(ζ, mean, std, n, X, zmean, edges, ok, nrejected), where mean/std/n/X are NamedTuples keyed by
+`fields` (X[f][sounding, level] holds the composite values, for histograms), zmean is the mean height of each level, edges[sounding, 6] the layer boundaries,
 and ok the indices of the soundings used.
 """
 function composite_layers(profs, fields=(:θ,); nper=DEFAULT_NPER, maxgap=1500.0, kw...)
@@ -253,6 +273,7 @@ function composite_layers(profs, fields=(:θ,); nper=DEFAULT_NPER, maxgap=1500.0
      mean=NamedTuple{fields}(map(s -> s.mean, st)),
      std=NamedTuple{fields}(map(s -> s.std, st)),
      n=NamedTuple{fields}(map(s -> s.n, st)),
+     X=NamedTuple{fields}(map(f -> X[f], fields)),
      zmean=colstats(zs).mean, edges=edges, ok=ok, nrejected=length(profs) - length(ok))
 end
 
