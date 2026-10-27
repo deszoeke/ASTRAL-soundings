@@ -6,6 +6,7 @@ Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
 HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
 IJulia = "7073ff75-c697-5162-941a-fcdaad2a7d2a"
+IdealizedSounding = "d7b8f595-9609-4bd7-9664-4f09a433f735"
 Interpolations = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
 JLD2 = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
 NCDatasets = "85f8d34a-cbdd-5861-8df4-14fed0d494ab"
@@ -15,3 +16,6 @@ RegularExpressions = "27faeba3-bc54-5829-b163-df8cb949fe88"
 Revise = "295af30f-e4ad-537b-8983-00126c2a3abe"
 Thermodynamics = "b60c26fb-14c3-4610-9d3e-2d17fe7ff00c"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
+
+[sources]
+IdealizedSounding = {path = "IdealizedSounding"}
