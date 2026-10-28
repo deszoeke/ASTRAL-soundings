@@ -18,4 +18,4 @@ Thermodynamics = "b60c26fb-14c3-4610-9d3e-2d17fe7ff00c"
 Unitful = "1986cc42-f94f-5a68-af5c-568840ba703d"
 
 [sources]
-IdealizedSounding = {path = "IdealizedSounding"}
+IdealizedSounding = {path = "../../monsoon-breeze/IdealizedSounding"}
